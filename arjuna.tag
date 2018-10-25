@@ -115,7 +115,6 @@
 	flip(e) {
 		console.log('flip');
 		this.deck[this.index].flipped = !this.deck[this.index].flipped;
-		this.next(e);
 	}
 
 	exec(e) {
