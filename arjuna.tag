@@ -1,8 +1,13 @@
 <arjuna>
   <table class="table">
     <tbody>
+			<tr>
+				<td colspan='2'>
+					<center>{ deck[index].id }{ flipped() ? deck[index].id : '' }</center>
+				</td>
+			</tr>
       <tr if={!active}>
-        <td>
+        <td width="20%">
           <span class="badge {badge-secondary: flipped()}">?</span>
         </td>
         <td>
