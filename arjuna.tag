@@ -1,52 +1,72 @@
 <arjuna>
-  <table class="table">
+  <h2 if={!player}>Arjuna: Choose Your Faction</h2>
+  <div if={!player} class="list-group">
+    <a each={ faction in factions }
+      href="#" class="list-group-item" onclick={start}>
+      {faction.toUpperCase()}
+    </a>
+  </div>
+
+  <table if={player} class="table">
     <tbody>
-			<tr>
-				<td colspan='2'>
-					<center>{ deck[index].id }{ flipped() ? deck[index].id : '' }</center>
-				</td>
-			</tr>
-      <tr if={!active}>
-        <td width="20%">
-          <span class="badge {badge-secondary: flipped()}">?</span>
+      <tr>
+        <td colspan='3'>
+          <center>
+          {player.toUpperCase()} :
+          { deck[index].id }{ flipped() ? deck[index].id : '' }
+          </center>
         </td>
-        <td>
-          <button type="button" class="btn btn-secondary"
+      </tr>
+      <tr>
+        <td width="30%">
+          <button if={!active} type="button" class="btn btn-secondary"
             onclick={flip}>Flip</button>
+        </td>
+        <td width="20%">
+          <span class="badge {badge-secondary: flipped()}">Flip?</span>
+        </td>
+        <td width="50%">
           { current().flip }
         </td>
       </tr>
       <tr>
         <td>
-          <span class="badge {badge-secondary: flipped()}">?</span>
+          <div if={!active} class="btn-group" role="group" aria-label="Execute?">
+            <button type="button" class="btn btn-primary" onclick={exec}>Yes</button>
+            <button type="button" class="btn btn-secondary" onclick={next}>No</button>
+          </div>
         </td>
         <td>
-          <button if={!active} type="button" class="btn btn-primary"
-            onclick={exec}>Yes</button>
-          <button if={!active} type="button" class="btn btn-secondary"
-            onclick={next}>No</button>
+          <span class="badge {badge-secondary: flipped()}">Exec?</span>
+        </td>
+        <td>
           { current().exec }
         </td>
       </tr>
       <tr each={ faction in factions } key={faction}>
         <td>
-					<span class="badge badge-pill">{ faction }</span>
-					{ current()[faction].limit }
-				</td>
-        <td>
           <button if={active} type="button" class="btn btn-primary"
             onclick={next}>Done</button>
+        </td>
+        <td>
+          <span class="badge badge-pill">{faction.toUpperCase()}</span>
+          { current()[faction].limit }
+        </td>
+        <td>
           <b>{ current()[faction].action }</b>
-					{ current()[faction].mods }
+          <p>&#9312; { current()[faction].mods }</p>
         </td>
       </tr>
     </tbody>
   </table>
 
+  <footer class="m-2">(Arjuna is for solo mode testing only.)</footer>
+
+  this.player = undefined;
   this.active = false;
   this.index = 0;
-	this.factions = ['raj','inc','ml','rev'];
- 	this.deck = [
+  this.factions = ['raj','inc','ml','rev'];
+  this.deck = [
   {
     "front": {
       "rev": {
@@ -481,28 +501,45 @@
   }
 ];
 
+  log(msg) {
+    var card = this.deck[this.index];
+    var id = card.id;
+    if (card.flipped) { id += id; }
+    console.log(id + ": " + msg);
+  }
+
+  start(e) {
+    this.player = e.item.faction;
+    console.log("Start: " + this.player);
+  }
+
   flipped() {
     return this.deck[this.index].flipped;
   }
 
   current() {
-    card = this.deck[this.index]
+    var card = this.deck[this.index];
     return card.flipped ? card.back : card.front;
   }
 
   flip(e) {
-    console.log('flip');
-    this.deck[this.index].flipped = !this.deck[this.index].flipped;
-		console.log(this.deck);
+    var card = this.deck[this.index];
+    this.log("Flipped.");
+    card.flipped = !card.flipped;
   }
 
   exec(e) {
-    console.log('exec');
-    this.active = true
+    var card = this.deck[this.index];
+    this.log("Condition true.");
+    this.active = true;
   }
 
   next(e) {
-    console.log('next');
+    if (e.item) {
+      this.log("Acted for " + e.item.faction);
+    } else {
+      this.log("Condition false.");
+    }
     this.active = false;
     this.index = (this.index + 1) % this.deck.length;
   }
