@@ -45,7 +45,7 @@
       </tr>
       <tr each={ faction in factions } key={faction}>
         <td>
-          <button if={active} type="button" class="btn btn-primary"
+          <button if={active && faction != player} type="button" class="btn btn-primary"
             onclick={next}>Done</button>
         </td>
         <td>
