@@ -71,7 +71,7 @@
   this.active = false;
   this.index = 0;
   this.factions = ['raj','inc','ml','rev'];
-  this.deck = [
+  this.deck = [{"id": "shuffle", "flipped": false},
   {
     "front": {
       "rev": {
@@ -515,6 +515,7 @@
 
   start(e) {
     this.player = e.item.faction;
+    this.shuffle();
     this.log("START");
   }
 
@@ -547,6 +548,34 @@
     }
     this.active = false;
     this.index = (this.index + 1) % this.deck.length;
+
+    // Shuffle card?
+    cur = this.deck[this.index];
+    if (cur.id == "shuffle") {
+      if (cur.flipped) {
+        cur.flipped = false;
+        this.log("SHUFFLED");
+        this.shuffle();
+        this.index = 0;
+      } else {
+        this.flip(e);
+        // And increment index manually to avoid this logic.
+        this.index = (this.index + 1) % this.deck.length;
+      }
+    }
+  }
+
+  shuffle() { // Fisher–Yates shuffle
+    deck = this.deck;
+    var i = deck.length;
+    while (0 !== i) {
+      var j = Math.floor(Math.random() * i);
+      i -= 1;
+
+      var tmp = deck[i];
+      deck[i] = deck[j];
+      deck[j] = tmp;
+    }
   }
 
 </arjuna>
