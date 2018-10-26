@@ -60,9 +60,14 @@
     </tbody>
   </table>
 
-  <footer class="m-2">(Arjuna is for solo mode testing only.)</footer>
+  <footer class="m-2">
+  Arjuna is for solo mode testing only. The log below is a CSV, just copy and paste it.
+  </footer>
+
+  <pre class="pre-scrollable">{messages.join('\n')}</pre>
 
   this.player = undefined;
+  this.messages = ["Player,Card,Event"];
   this.active = false;
   this.index = 0;
   this.factions = ['raj','inc','ml','rev'];
@@ -505,12 +510,12 @@
     var card = this.deck[this.index];
     var id = card.id;
     if (card.flipped) { id += id; }
-    console.log(id + ": " + msg);
+    this.messages.push(this.player + "," + id + "," + msg);
   }
 
   start(e) {
     this.player = e.item.faction;
-    console.log("Start: " + this.player);
+    this.log("START");
   }
 
   flipped() {
@@ -524,21 +529,21 @@
 
   flip(e) {
     var card = this.deck[this.index];
-    this.log("Flipped.");
+    this.log("FLIP");
     card.flipped = !card.flipped;
   }
 
   exec(e) {
     var card = this.deck[this.index];
-    this.log("Condition true.");
+    this.log("TRUE");
     this.active = true;
   }
 
   next(e) {
     if (e.item) {
-      this.log("Acted for " + e.item.faction);
+      this.log("DO " + e.item.faction);
     } else {
-      this.log("Condition false.");
+      this.log("FALSE");
     }
     this.active = false;
     this.index = (this.index + 1) % this.deck.length;
