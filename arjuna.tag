@@ -58,6 +58,10 @@
   this.deck = [];
   this.stats = {};
 
+  // For counting busy-work.
+  this.discards = 0;
+  this.flips = 0;
+
   log(msg) {
     this.messages.push([this.card(), msg].join(','));
     this.increment(msg); // track stats per card
@@ -114,6 +118,7 @@
   discard() {
     this.log("discard");
     this.next();
+    this.discards++;
   }
 
   next() {
@@ -124,11 +129,15 @@
   flip() {
     this.log("flip");
     this.flipside = !this.flipside;
+    this.flips++;
   }
 
   stop() {
     this.log("stop");
+    this.log(this.discards + "d+" + this.flips + "f");
     this.next();
+    this.discards = 0;
+    this.flips = 0;
   }
 
   end() {
